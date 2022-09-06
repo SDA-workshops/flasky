@@ -1,11 +1,13 @@
-from datetime import datetime
 import hashlib
-from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
+
+import bleach
+from flask import current_app, url_for
+from flask_login import UserMixin, AnonymousUserMixin
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from markdown import markdown
-import bleach
-from flask import current_app, request, url_for
-from flask_login import UserMixin, AnonymousUserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
+
 from app.exceptions import ValidationError
 from . import db, login_manager
 
@@ -87,7 +89,7 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(64), unique=True, index=True)
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     password_hash = db.Column(db.String(128))
-    confirmed = db.Column(db.Boolean, default=False)
+    confirmed = db.Column(db.Boolean, default=True)
     name = db.Column(db.String(64))
     location = db.Column(db.String(64))
     about_me = db.Column(db.Text())
